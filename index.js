@@ -1,3 +1,3 @@
-module.exports.add=()=>{
+module.exports.add=(title)=>{
   console.log('add')
 }
