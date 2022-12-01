@@ -1,36 +1,15 @@
-
 const homedir=require('os').homedir()
 const home=process.env.HOME || homedir
 const fs=require('fs')
 const p=require('path')
 const dbpath=p.join(home,'.todo')
+const db=require('./db.js')
 
-module.exports.add=(title)=>{
+module.exports.add=async (title)=>{
   //读取之前的任务
-  fs.readFile(dbpath,{flag:'a+'},(error,data)=>{
-    if(error){
-      console.log(error)
-    }else{
-      let list
-      try{
-        list=JSON.parse(data.toString())
-      }catch(error2){
-        list=[]
-      }
-      console.log(list)
-      const task={
-        title:title,
-        done:false
-      }
-      list.push(task)
-      const string=JSON.stringify(list)
-      fs.writeFile(dbpath,string,(error3)=>{
-         if(error3){
-           console.log(error3)
-         }
-      })
-    }
-  })
+  const list=await db.read()
   //往里面添加一个title任务
+  list.push({title:title,done:false})
   //存储任务到文件
+  await db.write(list)
 }
