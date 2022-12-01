@@ -22,7 +22,7 @@ function markAsUndone(list,index){
   list[index].done=false
   db.write(list)
 }
-function undateTitle(list,index){
+function updateTitle(list,index){
   inquirer
     .prompt({
       type: 'input',
@@ -40,6 +40,7 @@ function remove(list,index){
 }
 
 function askForAction(list,index){
+  const actions={markAsDone,markAsUndone,updateTitle,remove}
   inquirer
     .prompt({
       type: 'list',
@@ -49,24 +50,12 @@ function askForAction(list,index){
         {name:'退出',value:'quit'},
         {name:'已完成',value:'markAsDone'},
         {name:'未完成',value:'markAsUndone'},
-        {name:'改标题',value:'undateTitle'},
+        {name:'改标题',value:'updateTitle'},
         {name:'删除',value:'remove'}
       ]
     }).then((answer2)=>{
-    switch(answer2.action){
-      case 'markAsDone':
-        markAsDone(list,index)
-        break
-      case 'markAsUndone':
-        markAsUndone(list,index)
-        break
-      case 'undateTitle':
-        undateTitle(list,index)
-        break
-      case 'remove':
-        remove(list,index)
-        break
-    }
+    const action=actions[answer2.action]
+    action && action(list,index)
   })
 }
 
